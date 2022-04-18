@@ -96,7 +96,7 @@ def get_route(hostname):
                     #You should add the list above to your all traces list
                     #Fill in end
                 recvPacket, addr = mySocket.recvfrom(1024)
-                timeReceived = time.time()
+                timeReceived = time.time() -startedSelect
                 timeLeft = timeLeft - howLongInSelect
                 if timeLeft <= 0:
                     tracelist1.append("* * * Request timed out.")
@@ -109,9 +109,10 @@ def get_route(hostname):
 
             else:
                 #Fill in start
-                icmpHeader=recvPacket(1024)
+                icmpHeader=recvPacket[20:28]
                 ty, code, checksum, packetID, sequence = struct.unpack("bbHHh", icmpHeader)
                 types=ty
+                print(types)
                 #Fetch the icmp type from the IP packet
                 #Fill in end
                 try: #try to fetch the hostname
@@ -120,7 +121,8 @@ def get_route(hostname):
                     #Fill in end
                 except herror:   #if the host does not provide a hostname
                     #Fill in start
-                    tracelist1.append("Host Not Found")
+                    # hop#, rtt, hostIP(addr), hostname
+                    tracelist1.append((timeReceived,"hostname not returnable"))
                     tracelist2.append(tracelist1)
                     #Fill in end
 
@@ -129,6 +131,8 @@ def get_route(hostname):
                     timeSent = struct.unpack("d", recvPacket[28:28 +
                     bytes])[0]
                     #Fill in start
+                    tracelist1.append(("Host Not Found",timeSent))
+                    tracelist2.append(tracelist1)
                     #You should add your responses to your lists here
                     #Fill in end
                 elif types == 3:
@@ -142,15 +146,20 @@ def get_route(hostname):
                     timeSent = struct.unpack("d", recvPacket[28:28 + bytes])[0]
                     #Fill in start
                     #You should add your responses to your lists here and return your list if your destination IP is met
+                    pass
                     #Fill in end
                 else:
                     #Fill in start
                     #If there is an exception/error to your if statements, you should append that to your list here
+                    pass
                     #Fill in end
                 break
             finally:
+                print(tracelist1)
+                print(tracelist2)
                 mySocket.close()
 
 if __name__ == '__main__':
-    #get_route("google.co.il")
+    get_route("google.co.il")
     get_route("127.0.0.1")
+    get_route("no.no.no.e")
