@@ -194,7 +194,8 @@ def get_route(hostname):
                 #print(tracelist1)
                 #print(tracelist2)
                 mySocket.close()
-                return tracelist2
+                #return tracelist2
+    return tracelist2
 
 if __name__ == '__main__':
     pi=get_route("google.co.il")
@@ -202,4 +203,5 @@ if __name__ == '__main__':
     #get_route("portswigger.net")
     pi=get_route("localhost")
     print(pi)
+    print(get_route("bing.com"))
     #get_route("no.no.no.e")
