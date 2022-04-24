@@ -71,7 +71,7 @@ def get_route(hostname):
     print("Getting "+hostname+" by Python")
 
     for ttl in range(1,MAX_HOPS):
-        tracelist1.append(ttl)
+        tracelist1.append(str(ttl))
         for tries in range(TRIES):
             destAddr = gethostbyname(hostname)
 
