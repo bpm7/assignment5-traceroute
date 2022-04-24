@@ -68,7 +68,7 @@ def get_route(hostname):
     timeLeft = TIMEOUT
     tracelist1 = [] #This is your list to use when iterating through each trace 
     tracelist2 = [] #This is your list to contain all traces
-    print("Getting "+hostname+" by Python")
+    #print("Getting "+hostname+" by Python")
 
     for ttl in range(1,MAX_HOPS):
         tracelist1.append(str(ttl))
@@ -136,7 +136,7 @@ def get_route(hostname):
                 
                 # Time Exceeded
                 if types == 11:
-                    print("Code 11")
+                    #print("Code 11")
                     bytes = struct.calcsize("d")
                     timeSent = struct.unpack("d", recvPacket[28:28 +bytes])[0]
                     #Fill in start
@@ -171,17 +171,17 @@ def get_route(hostname):
                     tracelist1.append(timeReceived)
                     tracelist1.append(addr[0])
                     tracelist1.append(hopHostname)
-                    tracelist1=[]
+                    #tracelist1=[]
 
-                    for item in tracelist1:
-                        print(item)
+                    #for item in tracelist1:
+                        #print(item)
                     tracelist2.append(tracelist1)
                     for item in tracelist2:
                         print(item)
                     if destAddr==addr[0]:
                         print("FOUND IT")
                         return tracelist2
-                    
+                    tracelist1=[]
                     #Fill in end
                 else:
                     #Fill in start
@@ -196,7 +196,9 @@ def get_route(hostname):
                 mySocket.close()
 
 if __name__ == '__main__':
-    get_route("google.co.il")
+    pi=get_route("google.co.il")
+    print(pi)
     #get_route("portswigger.net")
-    get_route("127.0.0.1")
+    pi=get_route("localhost")
+    print(pi)
     #get_route("no.no.no.e")
