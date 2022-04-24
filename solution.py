@@ -68,8 +68,10 @@ def get_route(hostname):
     timeLeft = TIMEOUT
     tracelist1 = [] #This is your list to use when iterating through each trace 
     tracelist2 = [] #This is your list to contain all traces
+    print("Getting "+hostname+" by Python")
 
     for ttl in range(1,MAX_HOPS):
+        tracelist1.append(ttl)
         for tries in range(TRIES):
             destAddr = gethostbyname(hostname)
 
@@ -90,17 +92,21 @@ def get_route(hostname):
                 whatReady = select.select([mySocket], [], [], timeLeft)
                 howLongInSelect = (time.time() - startedSelect)
                 if whatReady[0] == []: # Timeout
+                    
                     tracelist1.append("* * * Request timed out.")
                     #Fill in start
                     tracelist2.append(tracelist1)
+                    tracelist1=[]
                     #You should add the list above to your all traces list
                     #Fill in end
                 recvPacket, addr = mySocket.recvfrom(1024)
                 timeReceived = time.time() -startedSelect
                 timeLeft = timeLeft - howLongInSelect
                 if timeLeft <= 0:
+
                     tracelist1.append("* * * Request timed out.")
                     tracelist2.append(tracelist1)
+                    tracelist1=[]
                     #Fill in start
                     #You should add the list above to your all traces list
                     #Fill in end
@@ -122,31 +128,45 @@ def get_route(hostname):
                 except herror:   #if the host does not provide a hostname
                     #Fill in start
                     # hop#, rtt, hostIP(addr), hostname
-                    tracelist1.append((timeReceived,"hostname not returnable"))
+                    tracelist1.extend((timeReceived,"hostname not returnable"))
                     tracelist2.append(tracelist1)
+                    tracelist1=[]
                     #Fill in end
-
+                
+                # Time Exceeded
                 if types == 11:
+                    print("Code 11")
                     bytes = struct.calcsize("d")
                     timeSent = struct.unpack("d", recvPacket[28:28 +
                     bytes])[0]
                     #Fill in start
-                    tracelist1.append(("Host Not Found",timeSent))
+                    tracelist1.extend((timeSent,"Host Not Found"))
                     tracelist2.append(tracelist1)
+                    tracelist1=[]
                     #You should add your responses to your lists here
                     #Fill in end
-                elif types == 3:
+                elif types == 3: # 
                     bytes = struct.calcsize("d")
                     timeSent = struct.unpack("d", recvPacket[28:28 + bytes])[0]
                     #Fill in start
+                    print("Code 3")
                     #You should add your responses to your lists here 
                     #Fill in end
                 elif types == 0:
+                    print("Code 0")
                     bytes = struct.calcsize("d")
                     timeSent = struct.unpack("d", recvPacket[28:28 + bytes])[0]
                     #Fill in start
                     #You should add your responses to your lists here and return your list if your destination IP is met
-                    pass
+                    tracelist1.append(timeSent)
+                    print(tracelist1)
+                    print(tracelist2)
+                    for item in tracelist1:
+                        print(item)
+                    tracelist2.append(tracelist1)
+                    for item in tracelist2:
+                        print(item)
+                    return tracelist2
                     #Fill in end
                 else:
                     #Fill in start
@@ -155,11 +175,13 @@ def get_route(hostname):
                     #Fill in end
                 break
             finally:
+                print("Finally")
                 print(tracelist1)
                 print(tracelist2)
                 mySocket.close()
 
 if __name__ == '__main__':
     get_route("google.co.il")
+    get_route("portswigger.net")
     get_route("127.0.0.1")
-    get_route("no.no.no.e")
+    #get_route("no.no.no.e")
