@@ -100,7 +100,7 @@ def get_route(hostname):
                     #You should add the list above to your all traces list
                     #Fill in end
                 recvPacket, addr = mySocket.recvfrom(1024)
-                timeReceived = time.time() -startedSelect
+                timeReceived =str( time.time() -startedSelect)
                 timeLeft = timeLeft - howLongInSelect
                 if timeLeft <= 0:
 
